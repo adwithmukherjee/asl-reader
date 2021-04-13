@@ -13,9 +13,10 @@ def preprocess_fn():
     
     
     test_labels = test_data[:, 0]
-    test_data = np.reshape(test_data[:,1:], (-1,28,28))
+    test_data = np.reshape(test_data[:,1:], (-1,28,28,1))
     
-    
+    train_data = train_data / 255
+    test_data = test_data / 255
     #TODO: preprocess, data augmentation, etc. 
 
     return train_data, train_labels, test_data, test_labels
