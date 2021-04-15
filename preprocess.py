@@ -17,6 +17,7 @@ def preprocess_fn():
     
     train_data = train_data / 255
     test_data = test_data / 255
+   
     #TODO: preprocess, data augmentation, etc. 
 
     return train_data, train_labels, test_data, test_labels
