@@ -1,5 +1,4 @@
 import numpy as np
-import pandas as pd
 
 def preprocess_fn():
     train_data = np.genfromtxt('./archive/sign_mnist_train/sign_mnist_train.csv',

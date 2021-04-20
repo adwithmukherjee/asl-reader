@@ -4,6 +4,29 @@ from tensorflow.keras.layers import \
 
 import hyperparameters as hp
 
+def get_model():
+    model = tf.keras.Sequential(
+        [
+            tf.keras.Input(shape=(28,28,1)),
+            Conv2D(32, kernel_size=5, activation='relu'),
+            #Conv2D(32, kernel_size=5, activation='relu'),
+            MaxPool2D(2, 2, padding="same"),
+            #Conv2D(64, kernel_size=5, activation='relu'),
+            Conv2D(64, kernel_size=5, activation='relu'),
+            MaxPool2D(2, 2, padding="same"),
+            Flatten(),
+            Dropout(0.35),
+            Dense(64, activation='relu'),
+            Dropout(0.2),
+            #      Dense(160, activation='relu'),
+            #      Dropout(0.3),
+            Dense(32, activation='relu'),
+            Dropout(0.2),
+            Dense(hp.num_classes, activation='softmax')
+        ]
+    )
+    return model
+
 
 class YourModel(tf.keras.Model):
     """ Your own neural network model. """
@@ -19,21 +42,33 @@ class YourModel(tf.keras.Model):
 
         self.architecture = [
             Conv2D(32, kernel_size=5, activation='relu'),
-            Conv2D(32, kernel_size=5, activation='relu'),
-            MaxPool2D(3, 2, padding="same"),
+            #Conv2D(32, kernel_size=5, activation='relu'),
+            MaxPool2D(2, 2, padding="same"),
+            #Conv2D(64, kernel_size=5, activation='relu'),
             Conv2D(64, kernel_size=5, activation='relu'),
-            Conv2D(64, kernel_size=5, activation='relu'),
-            MaxPool2D(3, 2, padding="same"),
+            MaxPool2D(2, 2, padding="same"),
             Flatten(),
             Dropout(0.35),
-            Dense(60, activation='relu'),
-            Dropout(0.35),
+            Dense(64, activation='relu'),
+            Dropout(0.2),
             #      Dense(160, activation='relu'),
             #      Dropout(0.3),
-            Dense(50, activation='relu'),
-            Dropout(0.35),
+            Dense(32, activation='relu'),
+            Dropout(0.2),
             Dense(hp.num_classes, activation='softmax')
         ]
+
+        # a = Conv2D(64, (3,3), strides = 2, activation='relu') #32 feature layers to start
+        # b = Conv2D(128, (3,3), strides = 2, activation='relu')
+        # c = Conv2D(200, (3,3), strides =2, activation = 'relu')
+        # c1 = MaxPool2D((2,2))
+        # d = Flatten() #make it 1D so dense layers can process
+        # e = Dropout(0.2)
+        # f = Dense(96, activation = 'relu')
+        # g = Dropout(0.2)
+        # h = Dense(32, activation='relu')
+        # i = Dense(hp.num_classes, activation='softmax') #10 is number of output classes
+        # self.architecture = [a,b,c,c1,d,e,f,g,h,i]
 
     def call(self, x):
         """ Passes input image through the network. """

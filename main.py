@@ -1,5 +1,5 @@
 from preprocess import preprocess_fn
-from model import YourModel
+from model import YourModel, get_model
 import hyperparameters as hp
 import tensorflow as tf
 import cv2
@@ -8,14 +8,14 @@ def main():
     print("hello")
     train_data, train_labels, test_data, test_labels = preprocess_fn()
 
-    model = YourModel()
-    model(tf.keras.Input(shape=(28,28,1)))
 
-    model.summary()
+    model = get_model()
+
+    model.summary() 
 
     model.compile(
-        optimizer=model.optimizer,
-        loss=model.loss_fn,
+        optimizer='adam',
+        loss='sparse_categorical_crossentropy',
         metrics=["sparse_categorical_accuracy"])
  
     model.fit(
@@ -27,9 +27,13 @@ def main():
 
     model.evaluate(
         x=test_data,
-        y=test_data,
+        y=test_labels,
         verbose=1
     )
+
+
+    model.save("model1.h5")
+
 
     cam = cv2.VideoCapture(0)
     cv2.namedWindow("test")
@@ -59,3 +63,4 @@ def main():
     
 if __name__ == '__main__':
     main()
+
