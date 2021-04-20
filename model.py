@@ -1,8 +1,41 @@
 import tensorflow as tf
 from tensorflow.keras.layers import \
     Conv2D, MaxPool2D, Dropout, Flatten, Dense
+from preprocess import preprocess_fn
 
 import hyperparameters as hp
+
+def retrive_saved_model():
+    model = tf.keras.models.load_model('./trained_model/model1.h5')
+    model.summary()
+    return model
+
+def train_and_save_model():
+
+    train_data, train_labels, test_data, test_labels = preprocess_fn()
+    model = get_model()
+    model.summary() 
+
+    model.compile(
+        optimizer='adam',
+        loss='sparse_categorical_crossentropy',
+        metrics=["sparse_categorical_accuracy"])
+ 
+    model.fit(
+        x=train_data,
+        y=train_labels, 
+        validation_data=(test_data, test_labels),
+        epochs=hp.num_epochs,
+    )
+
+    model.evaluate(
+        x=test_data,
+        y=test_labels,
+        verbose=1
+    )
+
+    model.save("model1.h5")
+    return model
 
 def get_model():
     model = tf.keras.Sequential(
