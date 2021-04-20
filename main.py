@@ -1,4 +1,5 @@
 from preprocess import preprocess_fn
+from handleResult import text2Speach
 from model import train_and_save_model,  retrive_saved_model
 import hyperparameters as hp
 import tensorflow as tf
@@ -6,6 +7,8 @@ import cv2
 
 def main():
     print("hello")
+    
+    text2Speach("Hello! This is working correctly and you just ran Main.py. WoooooooooooHoooooooeaoeaoeaoeao!")
     
     #model = train_and_save_model()
     model = retrive_saved_model()

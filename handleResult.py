@@ -1,5 +1,6 @@
 from gtts import gTTS
 import os
+from playsound import playsound
 
 def text2Speach(mytext):
     # This function reads aloud the text that is inputed into it!!!
@@ -9,4 +10,4 @@ def text2Speach(mytext):
     myobj.save("welcome.mp3")
   
     # Playing the converted file
-    os.system("mpg321 welcome.mp3")
+    playsound("Welcome.mp3")
