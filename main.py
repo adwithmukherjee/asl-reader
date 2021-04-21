@@ -8,6 +8,7 @@ import numpy as np
 
 
 def main():
+    # train_and_save_model()
 
     model = retrieve_saved_model()
     print(" ")

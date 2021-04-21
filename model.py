@@ -17,26 +17,39 @@ def retrieve_saved_model():
 def train_and_save_model():
 
     train_data, train_labels, test_data, test_labels = preprocess_fn()
+    print("Preprocessing complete!")
     model = get_model()
     model.summary()
+
+    datagen = tf.keras.preprocessing.image.ImageDataGenerator(width_shift_range=0.1,
+                                                              height_shift_range=0.1,
+                                                              zoom_range=0.1, rotation_range=10, brightness_range=(0.2, 0.8))
 
     model.compile(
         optimizer='adam',
         loss='sparse_categorical_crossentropy',
         metrics=["sparse_categorical_accuracy"])
 
-    model.fit(
-        x=train_data,
-        y=train_labels,
-        validation_data=(test_data, test_labels),
-        epochs=hp.num_epochs,
-    )
+    # model.fit(
+    #     x=train_data,
+    #     y=train_labels,
+    #     validation_data=(test_data, test_labels),
+    #     epochs=hp.num_epochs,
+    # )
 
+    model.fit(datagen.flow(train_data, train_labels, batch_size=32),
+              validation_data=datagen.flow(test_data, test_labels, batch_size=32), epochs=hp.num_epochs)
+    print("fit complete")
+    # model.evaluate(
+    #     x=test_data,
+    #     y=test_labels,
+    #     verbose=1
+    # )
     model.evaluate(
-        x=test_data,
-        y=test_labels,
+        datagen.flow(test_data, test_labels, batch_size=32),
         verbose=1
     )
+    print("evaluated")
 
     model.save("model1.h5")
     return model
@@ -47,9 +60,9 @@ def get_model():
         [
             tf.keras.Input(shape=(28, 28, 1)),
             Conv2D(32, kernel_size=5, activation='relu'),
-            #Conv2D(32, kernel_size=5, activation='relu'),
+            # Conv2D(32, kernel_size=5, activation='relu'),
             MaxPool2D(2, 2, padding="same"),
-            #Conv2D(64, kernel_size=5, activation='relu'),
+            # Conv2D(64, kernel_size=5, activation='relu'),
             Conv2D(64, kernel_size=5, activation='relu'),
             MaxPool2D(2, 2, padding="same"),
             Flatten(),
@@ -80,9 +93,9 @@ class YourModel(tf.keras.Model):
 
         self.architecture = [
             Conv2D(32, kernel_size=5, activation='relu'),
-            #Conv2D(32, kernel_size=5, activation='relu'),
+            # Conv2D(32, kernel_size=5, activation='relu'),
             MaxPool2D(2, 2, padding="same"),
-            #Conv2D(64, kernel_size=5, activation='relu'),
+            # Conv2D(64, kernel_size=5, activation='relu'),
             Conv2D(64, kernel_size=5, activation='relu'),
             MaxPool2D(2, 2, padding="same"),
             Flatten(),
@@ -116,7 +129,7 @@ class YourModel(tf.keras.Model):
 
         return x
 
-    @staticmethod
+    @ staticmethod
     def loss_fn(labels, predictions):
         """ Loss function for the model. """
 
