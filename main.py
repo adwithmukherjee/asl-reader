@@ -5,9 +5,6 @@ import hyperparameters as hp
 import tensorflow as tf
 import cv2
 import numpy as np
-from skimage.color import rgb2grey
-from skimage.transform import resize
-from skimage.io import imread
 
 def main():    
     model = retrieve_saved_model()
@@ -48,25 +45,18 @@ def classify(img_name, model):
     imgCrop = img[int(r[1]):int(r[1]+r[3]), int(r[0]):int(r[0]+r[2])]
     gray = cv2.cvtColor(imgCrop, cv2.COLOR_BGR2GRAY)
     blur = cv2.GaussianBlur(gray, (41, 41), 0)
+
     _, threshold = cv2.threshold(blur, 100, 255, cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU)
     masked = cv2.bitwise_and(gray, gray, mask=threshold)
 
-    cv2.imwrite("test2.jpg", masked)         # Final image
+    cv2.imwrite("test2.jpg", masked)
 
-    print(masked.shape)
-    img = resize(masked, (28,28))
+    img = cv2.resize(masked, (28, 28))
+    img = np.reshape(img, (1, 28, 28, 1))
     cv2.imwrite("test3.jpg", img) 
 
-    # prediction = model.predict_classes(img)
-    # print("Classification: " + classifications[prediction[0]])
-
-def remove_background(frame):
-    bgModel = cv2.createBackgroundSubtractorMOG2(0, 70)
-    fgmask = bgModel.apply(frame, learningRate=0)
-    kernel = np.ones((3, 3), np.uint8)
-    fgmask = cv2.erode(fgmask, kernel, iterations=1)
-    res = cv2.bitwise_and(frame, frame, mask=fgmask)
-    return res
+    prediction = model.predict_classes(img)
+    print("Classification: " + classifications[prediction[0]])
 
 if __name__ == '__main__':
     main()
