@@ -1,5 +1,5 @@
-from preprocess import preprocess_fn
-from handleResult import text2Speach
+# from preprocess import preprocess_fn
+# from handleResult import text2Speach
 from model import train_and_save_model,  retrieve_saved_model
 import hyperparameters as hp
 import tensorflow as tf
@@ -11,7 +11,6 @@ from skimage.io import imread
 
 def main():    
     model = retrieve_saved_model()
-    model.summary()
 
     cam = cv2.VideoCapture(0)
     cv2.namedWindow("ASL Letter Classification")
@@ -43,12 +42,32 @@ def main():
 
 def classify(img_name, model):
     classifications = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
-    img = imread(img_name)
-    img = rgb2grey(img)
-    img = resize(img, (1,28,28,1))
-    prediction = model.predict_classes(img)
-    print("Classification: " + classifications[prediction[0]])
-    
+    img = cv2.imread(img_name)
+
+    r = cv2.selectROI(img)
+    imgCrop = img[int(r[1]):int(r[1]+r[3]), int(r[0]):int(r[0]+r[2])]
+    gray = cv2.cvtColor(imgCrop, cv2.COLOR_BGR2GRAY)
+    blur = cv2.GaussianBlur(gray, (41, 41), 0)
+    _, threshold = cv2.threshold(blur, 100, 255, cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU)
+    masked = cv2.bitwise_and(gray, gray, mask=threshold)
+
+    cv2.imwrite("test2.jpg", masked)         # Final image
+
+    print(masked.shape)
+    img = resize(masked, (28,28))
+    cv2.imwrite("test3.jpg", img) 
+
+    # prediction = model.predict_classes(img)
+    # print("Classification: " + classifications[prediction[0]])
+
+def remove_background(frame):
+    bgModel = cv2.createBackgroundSubtractorMOG2(0, 70)
+    fgmask = bgModel.apply(frame, learningRate=0)
+    kernel = np.ones((3, 3), np.uint8)
+    fgmask = cv2.erode(fgmask, kernel, iterations=1)
+    res = cv2.bitwise_and(frame, frame, mask=fgmask)
+    return res
+
 if __name__ == '__main__':
     main()
 
