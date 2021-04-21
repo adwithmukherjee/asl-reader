@@ -5,7 +5,7 @@ from preprocess import preprocess_fn
 
 import hyperparameters as hp
 
-def retrive_saved_model():
+def retrieve_saved_model():
     model = tf.keras.models.load_model('./trained_model/model1.h5')
     model.summary()
     return model
