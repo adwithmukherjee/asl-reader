@@ -6,7 +6,9 @@ import tensorflow as tf
 import cv2
 import numpy as np
 
-def main():    
+
+def main():
+
     model = retrieve_saved_model()
 
     cam = cv2.VideoCapture(0)
@@ -22,11 +24,11 @@ def main():
         cv2.imshow("ASL Letter Classification", frame)
 
         k = cv2.waitKey(1)
-        if k%256 == 27:
+        if k % 256 == 27:
             # ESC pressed
             print("Escape hit, closing...")
             break
-        elif k%256 == 32:
+        elif k % 256 == 32:
             # SPACE pressed
             img_name = "opencv_frame_{}.jpg".format(img_counter)
             cv2.imwrite(img_name, frame)
@@ -37,8 +39,10 @@ def main():
     cam.release()
     cv2.destroyAllWindows()
 
+
 def classify(img_name, model):
-    classifications = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
+    classifications = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K',
+                       'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
     img = cv2.imread(img_name)
 
     r = cv2.selectROI(img)
@@ -46,18 +50,19 @@ def classify(img_name, model):
     gray = cv2.cvtColor(imgCrop, cv2.COLOR_BGR2GRAY)
     blur = cv2.GaussianBlur(gray, (41, 41), 0)
 
-    _, threshold = cv2.threshold(blur, 100, 255, cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU)
+    _, threshold = cv2.threshold(
+        blur, 100, 255, cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU)
     masked = cv2.bitwise_and(gray, gray, mask=threshold)
 
     cv2.imwrite("test2.jpg", masked)
 
     img = cv2.resize(masked, (28, 28))
     img = np.reshape(img, (1, 28, 28, 1))
-    cv2.imwrite("test3.jpg", img) 
+    cv2.imwrite("test3.jpg", img)
 
     prediction = model.predict_classes(img)
     print("Classification: " + classifications[prediction[0]])
 
+
 if __name__ == '__main__':
     main()
-
