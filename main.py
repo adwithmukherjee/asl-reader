@@ -6,7 +6,9 @@ import tensorflow as tf
 import cv2
 import numpy as np
 
-def main():    
+
+def main():
+
     model = retrieve_saved_model()
     print(" ")
 
@@ -23,11 +25,11 @@ def main():
         cv2.imshow("ASL Letter Classification", frame)
 
         k = cv2.waitKey(1)
-        if k%256 == 27:
+        if k % 256 == 27:
             # ESC pressed
             print("Escape hit, closing...")
             break
-        elif k%256 == 32:
+        elif k % 256 == 32:
             # SPACE pressed
             img_name = "live_frames/frame_{}.jpg".format(img_counter)
             cv2.imwrite(img_name, frame)
@@ -38,8 +40,10 @@ def main():
     cam.release()
     cv2.destroyAllWindows()
 
+
 def classify(img_name, model):
-    classifications = ['A','B','C','D','E','F','G','H','I','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y']
+    classifications = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K',
+                       'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
     img = cv2.imread(img_name)
 
     print(" ")
@@ -52,7 +56,8 @@ def classify(img_name, model):
     gray = cv2.cvtColor(imgCrop, cv2.COLOR_BGR2GRAY)
     blur = cv2.GaussianBlur(gray, (41, 41), 0)
 
-    _, threshold = cv2.threshold(blur, 100, 255, cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU)
+    _, threshold = cv2.threshold(
+        blur, 100, 255, cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU)
     masked = cv2.bitwise_and(gray, gray, mask=threshold)
 
     final = cv2.resize(masked, (28, 28))
@@ -64,6 +69,6 @@ def classify(img_name, model):
     print("–––––––––––––––––––––––")
     print(" ")
 
+
 if __name__ == '__main__':
     main()
-

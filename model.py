@@ -4,26 +4,30 @@ from tensorflow.keras.layers import \
 from preprocess import preprocess_fn
 
 import hyperparameters as hp
+import os
+from datetime import datetime
+
 
 def retrieve_saved_model():
     model = tf.keras.models.load_model('./trained_model/model1.h5')
     model.summary()
     return model
 
+
 def train_and_save_model():
 
     train_data, train_labels, test_data, test_labels = preprocess_fn()
     model = get_model()
-    model.summary() 
+    model.summary()
 
     model.compile(
         optimizer='adam',
         loss='sparse_categorical_crossentropy',
         metrics=["sparse_categorical_accuracy"])
- 
+
     model.fit(
         x=train_data,
-        y=train_labels, 
+        y=train_labels,
         validation_data=(test_data, test_labels),
         epochs=hp.num_epochs,
     )
@@ -37,10 +41,11 @@ def train_and_save_model():
     model.save("model1.h5")
     return model
 
+
 def get_model():
     model = tf.keras.Sequential(
         [
-            tf.keras.Input(shape=(28,28,1)),
+            tf.keras.Input(shape=(28, 28, 1)),
             Conv2D(32, kernel_size=5, activation='relu'),
             #Conv2D(32, kernel_size=5, activation='relu'),
             MaxPool2D(2, 2, padding="same"),
@@ -114,6 +119,5 @@ class YourModel(tf.keras.Model):
     @staticmethod
     def loss_fn(labels, predictions):
         """ Loss function for the model. """
-
 
         return tf.keras.losses.sparse_categorical_crossentropy(labels, predictions)
