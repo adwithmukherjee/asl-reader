@@ -14,7 +14,7 @@ def main():
     model.summary()
 
     cam = cv2.VideoCapture(0)
-    cv2.namedWindow("test")
+    cv2.namedWindow("ASL Letter Classification")
     img_counter = 0
 
     while True:
