@@ -39,7 +39,7 @@ def main():
     cv2.destroyAllWindows()
 
 def classify(img_name, model):
-    classifications = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
+    classifications = ['A','B','C','D','E','F','G','H','I','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y']
     img = cv2.imread(img_name)
 
     print(" ")
