@@ -2,7 +2,8 @@ import tensorflow as tf
 from tensorflow.keras.layers import \
     Conv2D, MaxPool2D, Dropout, Flatten, Dense
 from preprocess import preprocess_fn
-
+import matplotlib
+from matplotlib import pyplot as plt
 import hyperparameters as hp
 import os
 from datetime import datetime
@@ -30,28 +31,32 @@ def train_and_save_model():
         loss='sparse_categorical_crossentropy',
         metrics=["sparse_categorical_accuracy"])
 
-    # model.fit(
-    #     x=train_data,
-    #     y=train_labels,
-    #     validation_data=(test_data, test_labels),
-    #     epochs=hp.num_epochs,
-    # )
+    results = model.fit(datagen.flow(train_data, train_labels, batch_size=32),
+                        validation_data=datagen.flow(test_data, test_labels, batch_size=32), epochs=hp.num_epochs)
 
-    model.fit(datagen.flow(train_data, train_labels, batch_size=32),
-              validation_data=datagen.flow(test_data, test_labels, batch_size=32), epochs=hp.num_epochs)
-    print("fit complete")
-    # model.evaluate(
-    #     x=test_data,
-    #     y=test_labels,
-    #     verbose=1
-    # )
     model.evaluate(
         datagen.flow(test_data, test_labels, batch_size=32),
         verbose=1
     )
-    print("evaluated")
 
     model.save("model1.h5")
+
+    acc = results.history['sparse_categorical_accuracy']
+    val_acc = results.history['val_sparse_categorical_accuracy']
+    loss = results.history['loss']
+    val_loss = results.history['val_loss']
+    epochs = range(1, len(acc) + 1)
+    plt.plot(epochs, acc, 'bo', label='Training acc')
+    plt.plot(epochs, val_acc, 'b', label='Validation acc')
+    plt.title('Training and validation accuracy')
+    plt.legend()
+    plt.figure()
+    plt.plot(epochs, loss, 'bo', label='Training loss')
+    plt.plot(epochs, val_loss, 'b', label='Validation loss')
+    plt.title('Training and validation loss')
+    plt.legend()
+    plt.show()
+
     return model
 
 
