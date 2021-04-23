@@ -1,7 +1,7 @@
 import tensorflow as tf
 from tensorflow.keras.layers import \
     Conv2D, MaxPool2D, Dropout, Flatten, Dense
-from preprocess import preprocess_fn
+from preprocess import preprocess_fn, alternate_preprocess_fn
 import matplotlib
 from matplotlib import pyplot as plt
 import hyperparameters as hp
@@ -18,6 +18,7 @@ def retrieve_saved_model():
 def train_and_save_model():
 
     train_data, train_labels, test_data, test_labels = preprocess_fn()
+    #train_data, train_labels, test_data, test_labels = alternate_preprocess_fn()
     print("Preprocessing complete!")
     model = get_model()
     model.summary()
